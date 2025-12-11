@@ -2,11 +2,11 @@
 
 This is an implementation of a simple web vulnerability scanner using python; this is a personal project belonging to Hojune Kim. 
 
-## core
+## Implementation
 
-This section directory explains the main functionalities of the Python programs in the `core` directory, going through the main classes and functions.
+This section goes through the details of `web-vuln-scanner` implementation.
 
-### crawler.py
+### core/crawler.py
 
 The python class `Crawler` is a simple BFS web crawler that stays within the same domain while keeping track of its search depth.
 
@@ -22,7 +22,7 @@ The python class `Crawler` is a simple BFS web crawler that stays within the sam
 - A response from accessing the `url` is stored in `response`. Using `extract_links()` on `response.text` results in discovering new links, whose depths are now `depth + 1`. Add these new pairs of `(url, depth)` to the deque.
 - Repeat the process while the deque is not empty and `len(self.visited) < self.max_pages`. If `depth + 1` is greater than `self.max_depth`, we simply do not add the corresponding `(url, depth)` pair to the deque.
 
-### http_client.py
+### core/http_client.py
 
 This program contains a wrapper class `HttpClient`, which introduces abstractions and simplifies the use of `requests.Session` object. This is needed for getting a response from the target website, checking same-domain condition, and keeping a consistent session header.
 
@@ -33,4 +33,8 @@ This program contains a wrapper class `HttpClient`, which introduces abstraction
 `same_domain()` function checks whether the given `url` and `base_domain` are the same. If the given `url` is relative, its domain is deemed to be always the same as `base_domain`. 
 
 `get()` performs a GET request to the relative url given as input. It returns the response of the request.
+
+
+### scanners/base.py
+
 
