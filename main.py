@@ -5,6 +5,8 @@ import argparse
 from core.http_client import HttpClient
 from core.crawler import Crawler
 
+from scanners.xss import XSSScanner
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -42,6 +44,25 @@ def main():
     print("\n[*] Crawl finished. Visited URLs:")
     for url in visited_urls:
         print(f"  - {url}")
+
+    ## XSSScanner Section Begins ##
+    
+    xss_scanner = XSSScanner(client)
+
+    results = []
+    for url in visited_urls:
+        scan_results = xss_scanner.scan(url)
+        results.extend(scan_results)
+
+    print("\n[*] XSS scan finished.")
+    if not results:
+        print("[-] No potential reflected XSS found (with basic checks).")
+    else:
+        print(f"[+] Found {len(results)} potential XSS issue(s):")
+        for r in results:
+            print(f"  - {r}")
+    
+    ## XSSScanner Section Ends ##
 
 
 if __name__ == "__main__":
