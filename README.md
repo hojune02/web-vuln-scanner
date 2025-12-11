@@ -24,3 +24,13 @@ The python class `Crawler` is a simple BFS web crawler that stays within the sam
 
 ### http_client.py
 
+This program contains a wrapper class `HttpClient`, which introduces abstractions and simplifies the use of `requests.Session` object. This is needed for getting a response from the target website, checking same-domain condition, and keeping a consistent session header.
+
+`__init__()` defines `base_url`, which is the target url. `session` attribute contains a `requests.Session()` object, which we will use to retrieve responses from the website.  `timeout` attribute is set so that requests do not run forever. `session`'s header always contains a key-value pair for *User-Agent* for keeping a constant header format. `base_domain` contains the target domain extracted from `base_url`. 
+
+`get_full_url()` takes an `url` input and concatenate it to the `base_url` using `urljoin()`. This turns a relative url (e.g. `/login`) into an absolute one (`target.com/login`).
+
+`same_domain()` function checks whether the given `url` and `base_domain` are the same. If the given `url` is relative, its domain is deemed to be always the same as `base_domain`. 
+
+`get()` performs a GET request to the relative url given as input. It returns the response of the request.
+
