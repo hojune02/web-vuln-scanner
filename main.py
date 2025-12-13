@@ -5,6 +5,9 @@ import argparse
 from core.http_client import HttpClient
 from core.crawler import Crawler
 
+from core.dynamic_crawler import DynamicCrawler  # <-- new
+from core.js_renderer import JSRenderer         # <-- new
+
 from scanners.xss import XSSScanner
 
 
@@ -29,17 +32,38 @@ def parse_args():
         default=50,
         help="Maximum number of pages to crawl (default: 50)",
     )
+    parser.add_argument(
+        "--dynamic",
+        action="store_true",
+        help="Use headless browser (Playwright) to render JS-heavy sites",
+    )
     return parser.parse_args()
 
+def run_crawl(client: HttpClient, args) -> list[str]:
+    if args.dynamic:
+        print("[*] Using DynamicCrawler (JS rendering enabled)")
+        with JSRenderer(headless=True) as renderer:
+            crawler = DynamicCrawler(
+                client,
+                renderer,
+                max_depth=args.max_depth,
+                max_pages=args.max_pages,
+            )
+            visited_urls = crawler.crawl(args.url)
+    else:
+        print("[*] Using static Crawler (no JS rendering)")
+        crawler = Crawler(client, max_depth=args.max_depth, max_pages=args.max_pages)
+        visited_urls = crawler.crawl(args.url)
+
+    return visited_urls
 
 def main():
     args = parse_args()
 
     client = HttpClient(args.url)
-    crawler = Crawler(client, max_depth=args.max_depth, max_pages=args.max_pages)
 
     print(f"[*] Starting crawl from {args.url}")
-    visited_urls = crawler.crawl(args.url)
+    visited_urls = run_crawl(client, args)
 
     print("\n[*] Crawl finished. Visited URLs:")
     for url in visited_urls:

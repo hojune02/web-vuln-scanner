@@ -48,7 +48,7 @@ class XSSScanner(BaseScanner):
 
         for param in param_names:
             for payload in self.payloads:
-                test_url = self._mutate_url_with_payload(url, param, payload)
+                test_url = self._change_url_with_payload(url, param, payload)
 
                 try:
                     resp = self.client.get(test_url)
