@@ -34,6 +34,17 @@ This program contains a wrapper class `HttpClient`, which introduces abstraction
 
 `get()` performs a GET request to the relative url given as input. It returns the response of the request.
 
+### core/js_renderer.py
+
+This program defines `JSRenderer` class, which is used in `core/dynamic_crawler.py`. The class encapsulates a `Playwright` instance for running a browser environment. The environment then runs all the Javascript elements from the target web application, and reveals the final DOM structure. 
+
+`self.render()` function allows for accessing the HTML and final_url of the web application after running all of its JS elements. This HTML output will then be used to extract URLs.
+
+### core/dynamic_crawler.py
+
+The simple crawler has limitations in that it cannot view the final DOM structure of a web application after running its Javascript element. Many web applications that are Javascript-heavy (such as SPA) tend to maintain minimal HTML structures, on which the crawler cannot be utilised in the most effective manner.
+
+The dynamic crawler addresses this issue by running all the Javascript element in a headless browser environment. This is provided by `Playwright` module in Python. The crawler now has access to finalised DOM structure, extracting SPA style routes like `#/...`. 
 
 ### scanners/base.py
 
