@@ -71,16 +71,16 @@ def main():
         )
         visited_urls = crawler.crawl(args.url)
 
-    print("\n[*] Crawl finished. Visited URLs:")
-    for url in visited_urls:
-        print(f"  - {url}")
+        print("\n[*] Crawl finished. Visited URLs:")
+        for url in visited_urls:
+            print(f"  - {url}")
 
-    ## XSSScanner Section Begins ##
-    xss_scanner = DynamicXSSScanner(renderer)
+        ## XSSScanner Section Begins ##
+        xss_scanner = DynamicXSSScanner(renderer)
 
-    for url in visited_urls:
-        scan_results = xss_scanner.scan(url)
-        results.extend(scan_results)
+        for url in visited_urls:
+            scan_results = xss_scanner.scan(url)
+            results.extend(scan_results)
 
     print("\n[*] XSS scan finished.")
     if not results:
