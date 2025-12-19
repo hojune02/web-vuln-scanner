@@ -8,7 +8,9 @@ from core.crawler import Crawler
 from core.dynamic_crawler import DynamicCrawler  # <-- new
 from core.js_renderer import JSRenderer         # <-- new
 
-from scanners.xss import XSSScanner
+# from scanners.xss import XSSScanner <-- Obsolete, since it is static
+from scanners.dynamic_xss import DynamicXSSScanner # <-- Handling form-based XSS, query-based XSS in #/... URLs
+
 
 
 def parse_args():
@@ -40,40 +42,42 @@ def parse_args():
     return parser.parse_args()
 
 def run_crawl(client: HttpClient, args) -> list[str]:
-    if args.dynamic:
-        print("[*] Using DynamicCrawler (JS rendering enabled)")
-        with JSRenderer(headless=True) as renderer:
-            crawler = DynamicCrawler(
-                client,
-                renderer,
-                max_depth=args.max_depth,
-                max_pages=args.max_pages,
-            )
-            visited_urls = crawler.crawl(args.url)
-    else:
-        print("[*] Using static Crawler (no JS rendering)")
-        crawler = Crawler(client, max_depth=args.max_depth, max_pages=args.max_pages)
+    print("[*] Using DynamicCrawler (JS rendering enabled)")
+    with JSRenderer(headless=True) as renderer:
+        crawler = DynamicCrawler(
+            client,
+            renderer,
+            max_depth=args.max_depth,
+            max_pages=args.max_pages,
+        )
         visited_urls = crawler.crawl(args.url)
 
     return visited_urls
 
 def main():
     args = parse_args()
-
     client = HttpClient(args.url)
+    results = []
 
     print(f"[*] Starting crawl from {args.url}")
-    visited_urls = run_crawl(client, args)
+
+    print("[*] Using DynamicCrawler (JS rendering enabled)")
+    with JSRenderer(headless=True) as renderer:
+        crawler = DynamicCrawler(
+            client,
+            renderer,
+            max_depth=args.max_depth,
+            max_pages=args.max_pages,
+        )
+        visited_urls = crawler.crawl(args.url)
 
     print("\n[*] Crawl finished. Visited URLs:")
     for url in visited_urls:
         print(f"  - {url}")
 
     ## XSSScanner Section Begins ##
-    
-    xss_scanner = XSSScanner(client)
+    xss_scanner = DynamicXSSScanner(renderer)
 
-    results = []
     for url in visited_urls:
         scan_results = xss_scanner.scan(url)
         results.extend(scan_results)

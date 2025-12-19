@@ -1,3 +1,4 @@
+# Obsolete Static XSS Scanner
 from .base import ScanResult, BaseScanner
 from core.http_client import HttpClient
 
