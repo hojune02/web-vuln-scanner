@@ -1,6 +1,6 @@
 # web-vuln-scanner
 
-This is an implementation of a simple web vulnerability scanner using python; this is a personal project belonging to Hojune Kim. 
+This is an implementation of a simple web vulnerability scanner Psing python. A personal project of Hojune Kim
 
 ## Implementation
 
