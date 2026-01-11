@@ -7,7 +7,7 @@ This is an implementation of a simple web vulnerability scanner Psing python. A 
 This section goes through the details of `web-vuln-scanner` implementation.
 
 ### core/crawler.py
-s
+
 The python class `Crawler` is a simple BFS web crawler that stays within the same domain while keeping track of its search depth.
 
 `__init__()` defines the elements that make up a `Crawler` object. `client` is a HttpClient, while `max_depth` and `max_pages` set the maximum search depth and no. of pages, respectively. For conducting BFS search, we keep `visited` and `discovered` sets for tracking.
